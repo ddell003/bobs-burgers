@@ -1,0 +1,154 @@
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+David Dell
+MET CS 521
+09/26/19
+Final Project
+Description: A python API using the flask web framework
+"""
+
+from flask import Flask, jsonify, make_response, abort, request
+from flask_cors import CORS
+from services.user.user_service import UserService
+from request_validator import RequestValidator
+
+
+# configuration
+DEBUG = True
+
+# instantiate the app
+app = Flask(__name__)
+app.config.from_object(__name__)
+
+# enable CORS, needed if setting up a front end app
+CORS(app, resources={r'/*': {'origins': '*'}})
+
+# define the services being used
+user_service = UserService()
+
+"""
+Router:
+The below is the router for my API
+This page takes in requests and maps them to my services. This page ideally should be kept skinny, and only deal with 
+requests and responses
+"""
+
+
+@app.route('/users', methods=['GET'])
+def get_users():
+    """
+    This function makes a call to the user service requesting all users, down the road i can I query strings to give
+    user more flexibility with request
+    It then calls flask function jsonify which converts the data into json
+    Make response is then called which returns a friedly http response with the json and what ever status code you want
+    :return:
+    """
+    return make_response(jsonify(wrap_data(user_service.get_users())))
+
+
+@app.route('/users/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+
+    user = user_service.get_user(user_id)
+    has_item(user)
+    return make_response(jsonify(wrap_data(user)))
+
+
+@app.route('/users', methods=['POST'])
+def create_user():
+
+    request_object = RequestValidator(request)
+
+    return make_response(jsonify(wrap_data(user_service.create_user(request_object))), 201)
+
+
+@app.route('/users/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+    """
+    Lets update the user
+    :param user_id:
+    :return:
+    """
+    user = user_service.get_user(user_id)
+    has_item(user)
+    request_object = RequestValidator(request)
+    return make_response(jsonify(wrap_data(user_service.update_user(request_object, user))), 200)
+
+
+@app.route('/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    """
+    Lets delete the user
+    :param user_id:
+    :return:
+    """
+    user = user_service.get_user(user_id)
+    has_item(user)
+
+    user_service.delete_user(user)
+
+    return make_response(jsonify({}), 204)
+
+
+def has_item(item):
+    """
+    lets check to see if an item was found, if not lets return a 404 to the user
+    :param item:
+    :return:
+    """
+    if len(item) == 0:
+        abort(404)
+
+
+def wrap_data(item):
+
+    """
+    lets format our response to be inside a data property
+    :param item:
+    :return:
+    """
+    return {'data': item}
+
+
+"""
+Error Handlers:
+
+The below are extension of the error handling methods by flask, I extended these functions so I can overwrite custom
+data and messages. The main reason behind extending these methods is that flask will try to return an html error 
+response message, this is an API, we want a json response message
+"""
+@app.errorhandler(404)
+def not_found(error):
+    """
+    By default, flask will try to return an html error response message, this is an API, we want a json response message
+    Lets return a simple 404 message
+    :param error:
+    :return:
+    """
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
+
+@app.errorhandler(400)
+def not_found(error):
+    """
+    By default, flask will try to return an html error response message, this is an API, we want a json response message
+    Lets return a simple 400 message
+    :param error:
+    :return:
+    """
+    return make_response(jsonify({'error': 'Bad Request'}), 400)
+
+
+@app.errorhandler(422)
+def not_found(error):
+    """
+    By default, flask will try to return an html error response message, this is an API, we want a json response message
+    :param error:
+    :return:
+    """
+    return make_response(jsonify({'error': 'The following fields (s) are required: '+error.description}), 422)
+
+
+if __name__ == '__main__':
+    app.run()
