@@ -48,20 +48,19 @@ class UserService:
                 'deleted': 0
             },
         ]
+    def builder(self):
+        return User()
+
+    def get_default_users(self):
+        return self.default_list
 
     def get_users(self):
         """
         Lets get the list of users
         :return:
         """
-        # lets see if any users have been stored, if not lets use the default list
-        try:
-            users = pickle.load(open(self.user_file_path, 'rb'))
-        except EOFError:
-            users = self.default_list
+        return self.builder().get()
 
-        # lets return all non deleted users
-        return [user for user in users if user['deleted'] == 0]
 
     def get_user(self, user_id):
         """
@@ -69,6 +68,8 @@ class UserService:
         :param user_id:
         :return:
         """
+
+        return self.builder().get_by_id(user_id)
         found_user = {}
 
         for user in self.get_users():

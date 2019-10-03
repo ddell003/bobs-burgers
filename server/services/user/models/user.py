@@ -1,4 +1,8 @@
-class User:
+from model import Model
+
+import sqlite3
+
+class User(Model):
 
     fields = [
         'first_name',
@@ -8,6 +12,7 @@ class User:
     ]
 
     soft_delete = True
+    table = 'users'
 
     def __init__(self):
 
@@ -18,5 +23,22 @@ class User:
     def __repr__(self):
 
         return repr('User')
+
+
+    #def create(self data):
+
+    def dict_factory(self, cursor, row):
+        """
+        Database helper function
+        :param cursor:
+        :param row:
+        :return:
+        """
+        d = {}
+        for idx, col in enumerate(cursor.description):
+            d[col[0]] = row[idx]
+
+
+
 
 

@@ -8,14 +8,17 @@ Final Project
 Description: A python API using the flask web framework
 """
 
-from flask import Flask, jsonify, make_response, abort, request
+from flask import Flask, jsonify, make_response, abort, request, g
 from flask_cors import CORS
 from services.user.user_service import UserService
 from request_validator import RequestValidator
-
+import sqlite3
+from sqlite3 import Error
 
 # configuration
 DEBUG = True
+
+DATABASE = 'burgers.db'
 
 # instantiate the app
 app = Flask(__name__)
@@ -90,6 +93,52 @@ def delete_user(user_id):
 
     return make_response(jsonify({}), 204)
 
+@app.route('/setup/setup_db', methods=['GET'])
+def setup_db():
+    """
+    Set up database, this is bad practice to do it this way but for demo purposes it works
+    :return:
+    """
+    # defin sql to create users table
+    user_table = """
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY,
+        first_name TEXT NOT NULL,
+        last_name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        deleted INTEGER DEFAULT 0
+    )
+    """
+    conn = get_connection()
+    conn.row_factory = dict_factory
+    cur = conn.cursor()
+    cur.execute(user_table)
+
+    for user in user_service.get_default_users():
+
+        create_users = """
+        INSERT INTO users (first_name, last_name, email)
+        VALUES 
+        """
+        create_users += "('{}','{}','{}')".format(user['first_name'], user['last_name'], user['email'])
+        cur.execute(create_users)
+    conn.commit()
+    all_users = cur.execute('SELECT * FROM users;').fetchall()
+
+    return make_response(jsonify(all_users), 200)
+
+def get_connection():
+
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = sqlite3.connect(DATABASE)
+    return db
+
+@app.teardown_appcontext
+def close_connection(exception):
+    db = getattr(g, '_database', None)
+    if db is not None:
+        db.close()
 
 def has_item(item):
     """
@@ -109,6 +158,19 @@ def wrap_data(item):
     :return:
     """
     return {'data': item}
+
+
+def dict_factory(cursor, row):
+    """
+    Database helper function
+    :param cursor:
+    :param row:
+    :return:
+    """
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
 
 
 """
@@ -148,7 +210,6 @@ def not_found(error):
     :return:
     """
     return make_response(jsonify({'error': 'The following fields (s) are required: '+error.description}), 422)
-
 
 if __name__ == '__main__':
     app.run()
