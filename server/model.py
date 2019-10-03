@@ -1,11 +1,17 @@
 import sqlite3
 from flask import g
 
-class Model:
 
+class Model:
+    """
+    All other models will extend this, we hold the core functionality here
+    We interact with the database for the model here
+    """
+    # default values
     fields = []
     table = None
-    soft_delete = False
+    # defaulting this to true unless we actually want to hard delete
+    soft_delete = True
 
     def __init__(self):
 
@@ -101,11 +107,16 @@ class Model:
         return entry
 
     def update(self, id, data):
-
+        """
+        Lets update the entry given an id and data
+        :param id:
+        :param data:
+        :return:
+        """
         values = ''
         count = 1
 
-        # lets loop over fields building up query
+        # lets loop over fields building up query so we only update valid fields
         for field in self.fields:
             if field not in data.keys():
                 continue
@@ -128,7 +139,11 @@ class Model:
         return entry
 
     def delete(self, id):
-
+        """
+        lets delete the entry
+        :param id:
+        :return:
+        """
         # no one actually deletes data anymore so we will soft delete this user
         query = "UPDATE {} SET deleted = 1 WHERE id = {}".format(self.table, id)
 
