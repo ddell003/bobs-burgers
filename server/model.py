@@ -58,6 +58,86 @@ class Model:
         # otherwise lets make it pretty
         return dict(zip([c[0] for c in cur.description], item[0]))
 
+    def create(self, data):
+        """
+        Lets create the item!
+        :param data:
+        :return:
+        """
+
+        string_fields = ''
+        values = ''
+        count = 1
+
+        # lets loop over fields building up query
+        for field in self.fields:
+            if field not in data.keys():
+                continue
+            comma = ''
+            if count < len(data.keys()):
+                comma = ','
+            string_fields += '{}{}'.format(field, comma)
+            values += "'{}'{} ".format(data[field], comma)
+            count += 1
+
+        if values == '':
+            return False
+
+        string_fields = '({})'.format(string_fields)
+        values = '({})'.format(values)
+
+        query = "INSERT INTO {} {} VALUES {}".format(self.table, string_fields, values)
+
+        # connect to db and make entry
+        conn = self.get_connection()
+        cur = conn.cursor()
+        cur.execute(query)
+        conn.commit()
+
+        # lets get the id of the item just made
+        last_id = cur.execute('SELECT last_insert_rowid()').fetchone()[0]
+        # lets get the made entry to return
+        entry = self.get_by_id(last_id)
+        return entry
+
+    def update(self, id, data):
+
+        values = ''
+        count = 1
+
+        # lets loop over fields building up query
+        for field in self.fields:
+            if field not in data.keys():
+                continue
+            comma = ''
+            if count < (len(data.keys()) - 1):
+                comma = ','
+            values += "'{}' = '{}'{}".format(field, data[field], comma)
+            count += 1
+
+        query = "UPDATE {} SET {} WHERE id = {}".format(self.table, values, id)
+
+        # connect to db and make entry
+        conn = self.get_connection()
+        cur = conn.cursor()
+        cur.execute(query)
+        conn.commit()
+
+        # lets get the made entry to return
+        entry = self.get_by_id(id)
+        return entry
+
+    def delete(self, id):
+
+        # no one actually deletes data anymore so we will soft delete this user
+        query = "UPDATE {} SET deleted = 1 WHERE id = {}".format(self.table, id)
+
+        # connect to db and make query
+        conn = self.get_connection()
+        cur = conn.cursor()
+        cur.execute(query)
+        conn.commit()
+
     def get_connection(self):
         """
         lets connect to the db which is stored in the globals

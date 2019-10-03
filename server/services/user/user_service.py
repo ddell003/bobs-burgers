@@ -9,7 +9,6 @@ class UserService:
     Repository sites on top of a database - file or array
     Model represents a database entity - the user
     """
-    user_file_path = 'services/user/users.txt'
 
     default_list = [
             {
@@ -87,13 +86,8 @@ class UserService:
         user = User()
         request_validator.validate_fields(user)
 
-        data  = request_validator.request.json
-        data['id'] = str(int(self.get_users()[-1]['id']) + 1)
-        data['deleted'] = 0
-
-        self.get_users().append(data)
-
-        return data
+        data = request_validator.request.json
+        return user.create(data)
 
     def update_user(self, request_validator, user):
 
@@ -115,10 +109,7 @@ class UserService:
         user['last_name'] = user_data['last_name']
         user['email'] = user_data['email']
 
-        # lest update this user now
-        self.get_users()[int(user['id']) - 1] = user
-
-        return user
+        return user_model.update(user['id'], user)
 
     def delete_user(self, user):
         """
@@ -126,7 +117,6 @@ class UserService:
         :param user:
         :return:
         """
-        # no one actually deletes data anymore so we will soft delete this user
-        user['deleted'] = 1
-        # lest update this user now
-        self.get_users()[int(user['id']) - 1] = user
+
+        user_model = User()
+        user_model.delete(user['id'])

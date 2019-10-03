@@ -44,7 +44,7 @@ def get_users():
     This function makes a call to the user service requesting all users, down the road i can I query strings to give
     user more flexibility with request
     It then calls flask function jsonify which converts the data into json
-    Make response is then called which returns a friedly http response with the json and what ever status code you want
+    Make response is then called which returns a friendly http response with the json and what ever status code you want
     :return:
     """
     return make_response(jsonify(wrap_data(user_service.get_users())))
@@ -99,7 +99,7 @@ def setup_db():
     Set up database, this is bad practice to do it this way but for demo purposes it works
     :return:
     """
-    # defin sql to create users table
+    # define sql to create users table
     user_table = """
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY,
@@ -114,15 +114,30 @@ def setup_db():
     cur = conn.cursor()
     cur.execute(user_table)
 
+    # lets truncate the table so we always start out with 5 users
+    cur.execute('DELETE from users;')
+
+    # see if any users exist and grab their emails
+    existing_users = cur.execute('SELECT * FROM users;').fetchall()
+    user_emails = {user['email'] for user in existing_users}
+
     for user in user_service.get_default_users():
 
+        # lets not recreate existing users in db
+        if user['email'] in user_emails:
+            continue
         create_users = """
         INSERT INTO users (first_name, last_name, email)
         VALUES 
         """
+        # create db entry for current user
         create_users += "('{}','{}','{}')".format(user['first_name'], user['last_name'], user['email'])
         cur.execute(create_users)
+
+    # lets save the changes to the db
     conn.commit()
+
+    # lets go grab all users and return them
     all_users = cur.execute('SELECT * FROM users;').fetchall()
 
     return make_response(jsonify(all_users), 200)
