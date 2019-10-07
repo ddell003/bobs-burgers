@@ -9,7 +9,8 @@ python app.py
 ```
 
 ## Populating data
-* using postman is a simple solution through hitting these endpoints or you can use curl
+* using postman is a simple solution to interact with this API or you can use curl
+** https://www.getpostman.com/
 ```
 # set up data
 http://127.0.0.1:5000/users
