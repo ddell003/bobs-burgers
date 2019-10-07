@@ -1,0 +1,120 @@
+{
+	"info": {
+		"_postman_id": "77472def-b020-46ff-96d7-e48495ce5e4e",
+		"name": "Bob's Burgers",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": " http://127.0.0.1:5000/users/1",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://127.0.0.1:5000/users/1"
+					},
+					"response": []
+				},
+				{
+					"name": " http://127.0.0.1:5000/users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://127.0.0.1:5000/users"
+					},
+					"response": []
+				},
+				{
+					"name": " POST http://127.0.0.1:5000/user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"first_name\":\"bobss\",\n\t\"last_name\":\"Belchers\",\n\t\"email\":\"bob@bobsburgers.gmail.com\"\n}"
+						},
+						"url": "http://127.0.0.1:5000/users"
+					},
+					"response": []
+				},
+				{
+					"name": " http://127.0.0.1:5000/user/1",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"first_name\":\"bobss\",\n\t\"last_name\":\"Belchers\",\n\t\"email\":\"bob@bobsburgers.gmail.com\"\n}"
+						},
+						"url": "http://127.0.0.1:5000/users/1"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE: http://127.0.0.1:5000/user/1",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"first_name\":\"bobss\",\n\t\"last_name\":\"Belcher\",\n\t\"email\":\"bob@bobsburgers.gmail.com\"\n}"
+						},
+						"url": "http://127.0.0.1:5000/users/1"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Set Up",
+			"item": [
+				{
+					"name": " http://127.0.0.1:5000/setup/set_up_db",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": "http://127.0.0.1:5000/setup/setup_db"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
