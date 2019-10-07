@@ -52,17 +52,28 @@ def get_users():
 
 @app.route('/users/<int:user_id>', methods=['GET'])
 def get_user(user_id):
-
+    """
+    url to get a specific user gets mapped here, we then call the userservice to process request
+    :param user_id:
+    :return:
+    """
+    # get the user
     user = user_service.get_user(user_id)
+    # see if a user was found
     has_item(user)
+    # return user object to client
     return make_response(jsonify(wrap_data(user)))
 
 
 @app.route('/users', methods=['POST'])
 def create_user():
-
+    """
+    Url to create a user gets mapped to this function
+    :return:
+    """
+    # lets validate the input the client sent to us
     request_object = RequestValidator(request)
-
+    # lets call the userservice to create the user and then return the created user to the client
     return make_response(jsonify(wrap_data(user_service.create_user(request_object))), 201)
 
 
@@ -73,9 +84,13 @@ def update_user(user_id):
     :param user_id:
     :return:
     """
+    # lets get the user we are updating
     user = user_service.get_user(user_id)
+    # make sure the user being updated exists
     has_item(user)
+    # validate the update data
     request_object = RequestValidator(request)
+    # go update the user and return updated object to client with a 200 response
     return make_response(jsonify(wrap_data(user_service.update_user(request_object, user))), 200)
 
 
@@ -86,11 +101,12 @@ def delete_user(user_id):
     :param user_id:
     :return:
     """
+    # see if user being deleted exists
     user = user_service.get_user(user_id)
     has_item(user)
-
+    # go perform delete operation
     user_service.delete_user(user)
-
+    # return empty 204 response to client, no data to return since the user was deleted
     return make_response(jsonify({}), 204)
 
 @app.route('/setup/setup_db', methods=['GET'])
@@ -99,58 +115,33 @@ def setup_db():
     Set up database, this is bad practice to do it this way but for demo purposes it works
     :return:
     """
-    # define sql to create users table
-    user_table = """
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY,
-        first_name TEXT NOT NULL,
-        last_name TEXT NOT NULL,
-        email TEXT NOT NULL,
-        deleted INTEGER DEFAULT 0
-    )
-    """
-    conn = get_connection()
-    conn.row_factory = dict_factory
-    cur = conn.cursor()
-    cur.execute(user_table)
+    # lets create the users table and load some default users in
+    user_service.set_up_users()
+    return make_response(jsonify(wrap_data(user_service.get_users())))
 
-    # lets truncate the table so we always start out with 5 users
-    cur.execute('DELETE from users;')
-
-    # see if any users exist and grab their emails
-    existing_users = cur.execute('SELECT * FROM users;').fetchall()
-    user_emails = {user['email'] for user in existing_users}
-
-    for user in user_service.get_default_users():
-
-        # lets not recreate existing users in db
-        if user['email'] in user_emails:
-            continue
-        create_users = """
-        INSERT INTO users (first_name, last_name, email)
-        VALUES 
-        """
-        # create db entry for current user
-        create_users += "('{}','{}','{}')".format(user['first_name'], user['last_name'], user['email'])
-        cur.execute(create_users)
-
-    # lets save the changes to the db
-    conn.commit()
-
-    # lets go grab all users and return them
-    all_users = cur.execute('SELECT * FROM users;').fetchall()
-
-    return make_response(jsonify(all_users), 200)
 
 def get_connection():
-
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-    return db
+    """
+    function used to connect to sqlite file database, we then save this info in the global to be used later in app on
+    same connection
+    :return:
+    """
+    try:
+        db = getattr(g, '_database', None)
+        if db is None:
+            db = g._database = sqlite3.connect('burgers.db')
+        return db
+    except:
+        # if we cant connect lets throw a 500 with an error message
+        abort(500, 'Issue Connecting to the database')
 
 @app.teardown_appcontext
 def close_connection(exception):
+    """
+    sqlite is a file so we need to close it when we are done with it, this ensures that its always closed
+    :param exception:
+    :return:
+    """
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()

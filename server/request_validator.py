@@ -2,14 +2,22 @@ from flask import abort
 
 
 class RequestValidator:
-
-    ignoreables = ['deleted']
+    """
+    This class validates user input for a given model
+    It gets initiated with a request and when ready to be validated it takes in a model
+    """
+    # fields that dont need validation on
+    __ignoreables = ['deleted']
 
     def __init__(self, request):
 
 
         self.request = request
         self.validate_json()
+
+    def __repr__(self):
+
+        return repr('Request Validator')
 
     def validate_json(self):
 
@@ -31,5 +39,5 @@ class RequestValidator:
         """
 
         for field in model.fields:
-            if field not in self.request.json and field not in self.ignoreables:
+            if field not in self.request.json and field not in self.__ignoreables:
                 abort(422, field)

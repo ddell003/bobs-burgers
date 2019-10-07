@@ -1,10 +1,11 @@
 import sqlite3
 from flask import g
+from flask import abort
 
 
 class Model:
     """
-    All other models will extend this, we hold the core functionality here
+    All other models will extend this, this holds the core functionality here
     We interact with the database for the model here
     """
     # default values
@@ -158,7 +159,14 @@ class Model:
         lets connect to the db which is stored in the globals
         :return:
         """
-        db = getattr(g, '_database', None)
-        if db is None:
-            db = g._database = sqlite3.connect('burgers.db')
-        return db
+
+        try:
+            db = getattr(g, '_database', None)
+            if db is None:
+                db = g._database = sqlite3.connect('burgers.db')
+            return db
+        except:
+            # if we cant connect lets throw a 500 with an error message
+            abort(500, 'Issue Connecting to the database')
+
+

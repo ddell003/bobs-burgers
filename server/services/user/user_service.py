@@ -120,3 +120,50 @@ class UserService:
 
         user_model = User()
         user_model.delete(user['id'])
+
+    def set_up_users(self):
+        """
+        Lets set up the users table and load in some default users .. should move this to a factory
+        :return:
+        """
+        user = User()
+         # define sql to create users table
+        user_table = """
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY,
+            first_name TEXT NOT NULL,
+            last_name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            deleted INTEGER DEFAULT 0
+        )
+        """
+        # lets connect to db through the model
+        conn = user.get_connection()
+        cur = conn.cursor()
+        # lets run the query we made
+        cur.execute(user_table)
+
+        # lets truncate the table so we always start out with 5 users
+        cur.execute('DELETE from users;')
+
+        # see if any users exist and grab their emails
+        existing_users = cur.execute('SELECT * FROM users;').fetchall()
+        user_emails = {user['email'] for user in existing_users}
+
+        # loop over default users and create them
+        for default_user in self.get_default_users():
+
+            # lets not recreate existing users in db
+            if default_user['email'] in user_emails:
+                continue
+            create_users = """
+            INSERT INTO users (first_name, last_name, email)
+            VALUES 
+            """
+
+            # create db entry for current user
+            create_users += "('{}','{}','{}')".format(default_user['first_name'], default_user['last_name'], default_user['email'])
+            cur.execute(create_users)
+
+        # lets save the changes to the db
+        conn.commit()
