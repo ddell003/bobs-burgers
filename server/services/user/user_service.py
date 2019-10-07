@@ -1,4 +1,3 @@
-import pickle
 from services.user.models.user import User
 
 
@@ -69,13 +68,6 @@ class UserService:
         """
 
         return self.builder().get_by_id(user_id)
-        found_user = {}
-
-        for user in self.get_users():
-            if int(user['id']) == user_id:
-                found_user = user
-                break
-        return found_user
 
     def create_user(self, request_validator):
         """

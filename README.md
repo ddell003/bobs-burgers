@@ -35,9 +35,10 @@ This endpoints clears the sqlite database and repopulates it with base data need
 ### Users
 Get all users:
 ```
+# url
  http://127.0.0.1:5000/users
 
- # or
+ # curl
  curl -X GET \
   http://127.0.0.1:5000/users \
   -H 'Accept: */*' \
@@ -51,7 +52,9 @@ Get all users:
 ```
 Get a user:
 ```
+# url
 http://127.0.0.1:5000/users/1
+# curl
 curl -X GET \
   http://127.0.0.1:5000/users/1 \
   -H 'Postman-Token: b90b68a3-1228-4a32-8e51-1ded35158636' \

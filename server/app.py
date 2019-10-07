@@ -10,9 +10,10 @@ Description: A python API using the flask web framework
 
 from flask import Flask, jsonify, make_response, abort, request, g
 from flask_cors import CORS
-from services.user.user_service import UserService
 from request_validator import RequestValidator
 import sqlite3
+from services.user.user_service import UserService
+from services.menu.menu_service import MenuService
 from sqlite3 import Error
 
 # configuration
@@ -29,6 +30,7 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 
 # define the services being used
 user_service = UserService()
+menu_service = MenuService()
 
 """
 Router:
@@ -109,6 +111,30 @@ def delete_user(user_id):
     # return empty 204 response to client, no data to return since the user was deleted
     return make_response(jsonify({}), 204)
 
+@app.route('/menu_sections', methods=['GET'])
+def get_menu_sections():
+    """
+    This function makes a call to the menu service requesting all sections, down the road i can I query strings to give
+    user more flexibility with request
+    It then calls flask function jsonify which converts the data into json
+    Make response is then called which returns a friendly http response with the json and what ever status code you want
+    :return:
+    """
+    return make_response(jsonify(wrap_data(menu_service.get_menu_sections())))
+
+@app.route('/menu_sections/<int:section_id>', methods=['GET'])
+def get_menu_section(section_id):
+    """
+    url to get a specific section gets mapped here, we then call the menu service to process request
+    :param section_id:
+    :return:
+    """
+    # get the section
+    item = menu_service.get_section(section_id)
+    # see if a section was found
+    has_item(item)
+    # return user object to client
+    return make_response(jsonify(wrap_data(item)))
 @app.route('/setup/setup_db', methods=['GET'])
 def setup_db():
     """
@@ -117,7 +143,12 @@ def setup_db():
     """
     # lets create the users table and load some default users in
     user_service.set_up_users()
-    return make_response(jsonify(wrap_data(user_service.get_users())))
+    menu_service.set_up_sections()
+    data = {
+        'users': user_service.get_users(),
+        'menu_sections' : menu_service.get_menu_sections()
+    }
+    return make_response(jsonify(wrap_data(data)))
 
 
 def get_connection():
