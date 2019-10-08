@@ -16,7 +16,7 @@ class MenuSection(Model):
     table = 'menu_sections'
 
     defaults = [
-        'Entrees',
+        'Burgers',
         'Sides',
         'Desserts',
         'Drinks',

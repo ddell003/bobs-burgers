@@ -135,6 +135,31 @@ def get_menu_section(section_id):
     has_item(item)
     # return user object to client
     return make_response(jsonify(wrap_data(item)))
+
+@app.route('/api/menu_items', methods=['GET'])
+def get_menu_items():
+    """
+    This function makes a call to the menu service requesting all items
+    It then calls flask function jsonify which converts the data into json
+    Make response is then called which returns a friendly http response with the json and what ever status code you want
+    :return:
+    """
+    return make_response(jsonify(wrap_data(menu_service.get_menu_items())))
+
+@app.route('/api/menu_items/<int:item_id>', methods=['GET'])
+def get_menu_item(item_id):
+    """
+    url to get a specific item gets mapped here, we then call the menu service to process request
+    :param item_id:
+    :return:
+    """
+    # get the section
+    item = menu_service.get_item(item_id)
+    # see if a section was found
+    has_item(item)
+    # return user object to client
+    return make_response(jsonify(wrap_data(item)))
+
 @app.route('/setup/setup_db', methods=['GET'])
 def setup_db():
     """
@@ -144,9 +169,11 @@ def setup_db():
     # lets create the users table and load some default users in
     user_service.set_up_users()
     menu_service.set_up_sections()
+    menu_service.set_up_items()
     data = {
         'users': user_service.get_users(),
-        'menu_sections' : menu_service.get_menu_sections()
+        'menu_sections' : menu_service.get_menu_sections(),
+        'menu_items' : menu_service.get_menu_items(),
     }
     return make_response(jsonify(wrap_data(data)))
 
