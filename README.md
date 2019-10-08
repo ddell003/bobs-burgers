@@ -1,7 +1,19 @@
-# bobs-burgers
-Python Server VueJs Client
+# Bob's Burgers
+Python Server VueJs Client - I like burgers and I love the tv show Bob's Burgers and I like programing so I combined the three for a proof of concept!
 
-## Server
+## About
+This is a full stack web application utilizing python as the backend using the micro framework flask and VueJs as the frontend
+To demonstrate the utilizations of these frameworks I have made a web application that allows a user to create additional users, 
+edit a menu and place orders. This app is far from complete but it demonstrates how to utilize python and flask to make a 
+restful API and VueJS as a client.
+
+http://flask.palletsprojects.com/en/1.1.x/
+
+
+https://vuejs.org/
+
+## Set Up:
+### Server
 to get the python server up and running cd into server and run
 ```
 source env/bin/activate
