@@ -16,15 +16,16 @@ class User(Model):
     # declare the name of the table
     table = 'users'
 
-    def __init__(self):
+    def __init__(self, first_name=None, last_name=None, email=None, deleted=0):
 
-        # lets set the fields on init
-        for field in self.fields:
-            setattr(self, field, None)
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.deleted = deleted
 
     def __repr__(self):
 
-        return repr('User')
+        return '<User %r>' % (self.first_name)
 
 
 

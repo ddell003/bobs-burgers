@@ -1,7 +1,7 @@
 import sqlite3
 from flask import g
 from flask import abort
-
+from database_helpers import dict_factory
 
 class Model:
     """
@@ -33,11 +33,14 @@ class Model:
         # lets build the query
         query = "SELECT * FROM {}{};".format(self.table, delete)
         conn = self.get_connection()
+        conn.row_factory = dict_factory
         cur = conn.cursor()
 
         # lets get all the items
         items = cur.execute(query).fetchall()
 
+        """
+        # alt method if we didnt want to use dict factory
         # lets loop over all items and cast them to a dictionary
         readable = []
         for item in items:
@@ -45,6 +48,8 @@ class Model:
             readable.append(row)
 
         return readable
+        """
+        return items
 
     def get_by_id(self, user_id):
         """
@@ -54,16 +59,21 @@ class Model:
 
         query = "SELECT * FROM {} WHERE id = {};".format(self.table, user_id)
         conn = self.get_connection()
+        conn.row_factory = dict_factory
         cur = conn.cursor()
         # lets get all the item
         item = cur.execute(query).fetchall()
 
+        """
+         # alt method if we didnt want to use dict factory
+        # otherwise lets make it pretty
+        return dict(zip([c[0] for c in cur.description], item[0]))
+        """
         # if item doesnt exist
         if not item:
             return {}
+        return item
 
-        # otherwise lets make it pretty
-        return dict(zip([c[0] for c in cur.description], item[0]))
 
     def create(self, data):
         """

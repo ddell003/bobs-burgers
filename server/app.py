@@ -40,7 +40,7 @@ requests and responses
 """
 
 
-@app.route('/users', methods=['GET'])
+@app.route('/api/users', methods=['GET'])
 def get_users():
     """
     This function makes a call to the user service requesting all users, down the road i can I query strings to give
@@ -52,7 +52,7 @@ def get_users():
     return make_response(jsonify(wrap_data(user_service.get_users())))
 
 
-@app.route('/users/<int:user_id>', methods=['GET'])
+@app.route('/api/users/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     """
     url to get a specific user gets mapped here, we then call the userservice to process request
@@ -67,7 +67,7 @@ def get_user(user_id):
     return make_response(jsonify(wrap_data(user)))
 
 
-@app.route('/users', methods=['POST'])
+@app.route('/api/users', methods=['POST'])
 def create_user():
     """
     Url to create a user gets mapped to this function
@@ -79,7 +79,7 @@ def create_user():
     return make_response(jsonify(wrap_data(user_service.create_user(request_object))), 201)
 
 
-@app.route('/users/<int:user_id>', methods=['PUT'])
+@app.route('/api/users/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
     """
     Lets update the user
@@ -96,7 +96,7 @@ def update_user(user_id):
     return make_response(jsonify(wrap_data(user_service.update_user(request_object, user))), 200)
 
 
-@app.route('/users/<int:user_id>', methods=['DELETE'])
+@app.route('/api/users/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     """
     Lets delete the user
@@ -111,7 +111,7 @@ def delete_user(user_id):
     # return empty 204 response to client, no data to return since the user was deleted
     return make_response(jsonify({}), 204)
 
-@app.route('/menu_sections', methods=['GET'])
+@app.route('/api/menu_sections', methods=['GET'])
 def get_menu_sections():
     """
     This function makes a call to the menu service requesting all sections, down the road i can I query strings to give
@@ -122,7 +122,7 @@ def get_menu_sections():
     """
     return make_response(jsonify(wrap_data(menu_service.get_menu_sections())))
 
-@app.route('/menu_sections/<int:section_id>', methods=['GET'])
+@app.route('/api/menu_sections/<int:section_id>', methods=['GET'])
 def get_menu_section(section_id):
     """
     url to get a specific section gets mapped here, we then call the menu service to process request
