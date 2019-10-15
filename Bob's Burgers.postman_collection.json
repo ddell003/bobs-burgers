@@ -13,7 +13,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "http://127.0.0.1:5000/users/1"
+						"url": "http://127.0.0.1:5000/api/users/1"
 					},
 					"response": []
 				},
@@ -22,7 +22,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "http://127.0.0.1:5000/users"
+						"url": "http://127.0.0.1:5000/api/users"
 					},
 					"response": []
 				},
@@ -42,7 +42,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"first_name\":\"bobss\",\n\t\"last_name\":\"Belchers\",\n\t\"email\":\"bob@bobsburgers.gmail.com\"\n}"
 						},
-						"url": "http://127.0.0.1:5000/users"
+						"url": "http://127.0.0.1:5000/api/users"
 					},
 					"response": []
 				},
@@ -62,7 +62,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"first_name\":\"bobss\",\n\t\"last_name\":\"Belchers\",\n\t\"email\":\"bob@bobsburgers.gmail.com\"\n}"
 						},
-						"url": "http://127.0.0.1:5000/users/1"
+						"url": "http://127.0.0.1:5000/api/users/1"
 					},
 					"response": []
 				},
@@ -82,7 +82,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"first_name\":\"bobss\",\n\t\"last_name\":\"Belcher\",\n\t\"email\":\"bob@bobsburgers.gmail.com\"\n}"
 						},
-						"url": "http://127.0.0.1:5000/users/1"
+						"url": "http://127.0.0.1:5000/api/users/1"
 					},
 					"response": []
 				}
@@ -115,6 +115,62 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "menu",
+			"item": [
+				{
+					"name": "sections",
+					"item": [
+						{
+							"name": " http://127.0.0.1:5000/menu_sections",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://127.0.0.1:5000/api/menu_sections"
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "items",
+					"item": [
+						{
+							"name": " http://127.0.0.1:5000/menu_sections",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://127.0.0.1:5000/api/menu_items/1"
+							},
+							"response": []
+						},
+						{
+							"name": " http://127.0.0.1:5000/menu_sections",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://127.0.0.1:5000/api/menu_items"
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "tests",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://127.0.0.1:5000/setup/run_tests"
+			},
+			"response": []
 		}
 	]
 }
