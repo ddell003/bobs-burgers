@@ -1,3 +1,14 @@
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+David Dell
+MET CS 521
+09/26/19
+Final Project
+Description: A python API using the flask web framework
+A class with 1 private 2 public attributes and methods
+"""
+
 from flask import abort
 
 
@@ -6,14 +17,14 @@ class RequestValidator:
     This class validates user input for a given model
     It gets initiated with a request and when ready to be validated it takes in a model
     """
-    # fields that dont need validation on
-    __ignoreables = ['deleted']
 
     def __init__(self, request):
 
 
         self.request = request
         self.validate_json()
+        # fields that dont need validation on
+        self.__ignoreables = ['deleted']
 
     def __repr__(self):
 
@@ -40,4 +51,13 @@ class RequestValidator:
 
         for field in model.fields:
             if field not in self.request.json and field not in self.__ignoreables:
-                abort(422, field)
+                self.__throw_error(422, field)
+
+    def __throw_error(self, status_code, message):
+        """
+        Lets throw some error with a message to send back to the user
+        :param status_code:
+        :param message:
+        :return:
+        """
+        abort(status_code, message)

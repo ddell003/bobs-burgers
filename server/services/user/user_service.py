@@ -8,7 +8,7 @@ class UserService:
     Repository sites on top of a database - file or array
     Model represents a database entity - the user
     """
-
+    # static list used for set up
     default_list = [
             {
                 'id':'1',
@@ -46,7 +46,7 @@ class UserService:
                 'deleted': 0
             },
         ]
-    def builder(self):
+    def __builder(self):
         return User()
 
     def get_default_users(self):
@@ -57,7 +57,7 @@ class UserService:
         Lets get the list of users
         :return:
         """
-        return self.builder().get()
+        return self.__builder().get()
 
 
     def get_user(self, user_id):
@@ -67,7 +67,7 @@ class UserService:
         :return:
         """
 
-        return self.builder().get_by_id(user_id)
+        return self.__builder().get_by_id(user_id)
 
     def create_user(self, request_validator):
         """

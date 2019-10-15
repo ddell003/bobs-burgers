@@ -19,8 +19,24 @@ to get the python server up and running cd into server and run
 source env/bin/activate
 python app.py
 ```
+ > **NOTE**: You know that you are in a virtual environment as "env" is now showing before the $ in your terminal - (env)$. To exit the virtual environment, use the command `deactivate`. You can reactivate by navigating back to the project directory and running `source env/bin/activate`.
+### Client
+To get the client running cd into client. Copy and past the generate url into a browser to view it!
+```
+npm install
+npm run serve
+```
+## Unit Tests
+Started basic unit test to demonstrate test driven development using flask
 
+You can also hit the endpoint "setup/run_tests" while the app is running for basic assertions
+> **NOTE**: If you started server you will need to exit it first before running tests
+```
+source env/bin/activate
+python test.py
+```
 ## Populating data
+* get the server running (python app.py step)
 * using postman is a simple solution to interact with this API or you can use curl https://www.getpostman.com/
 * you can view all endpoints through importing the .postman_collection.json found in the base of this project into postman
 
@@ -48,7 +64,7 @@ This endpoints clears the sqlite database and repopulates it with base data need
 Get all users:
 ```
 # url
- http://127.0.0.1:5000/users
+ http://127.0.0.1:5000/api/users
 
  # curl
  curl -X GET \
@@ -65,7 +81,7 @@ Get all users:
 Get a user:
 ```
 # url
-http://127.0.0.1:5000/users/1
+http://127.0.0.1:5000/api/users/1
 # curl
 curl -X GET \
   http://127.0.0.1:5000/users/1 \
@@ -76,7 +92,7 @@ Create a user:
 ```
 # use postman example or the curl response:
 curl -X POST \
-  http://127.0.0.1:5000/users \
+  http://127.0.0.1:5000/api/users \
   -H 'Accept: */*' \
   -H 'Accept-Encoding: gzip, deflate' \
   -H 'Cache-Control: no-cache' \
@@ -97,7 +113,7 @@ curl -X POST \
 Update a user:
 ```
 curl -X PUT \
-  http://127.0.0.1:5000/users/1 \
+  http://127.0.0.1:5000/api/users/1 \
   -H 'Accept: */*' \
   -H 'Accept-Encoding: gzip, deflate' \
   -H 'Cache-Control: no-cache' \
@@ -118,7 +134,7 @@ curl -X PUT \
 Delete a user:
 ```
 curl -X DELETE \
-  http://127.0.0.1:5000/users/1 \
+  http://127.0.0.1:5000/api/users/1 \
   -H 'Content-Type: application/json' \
   -H 'Postman-Token: bb08c974-a78c-438b-a03b-7c76271e1529' \
   -H 'cache-control: no-cache' \

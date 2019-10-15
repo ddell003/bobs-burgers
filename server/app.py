@@ -51,7 +51,7 @@ def get_users():
     Make response is then called which returns a friendly http response with the json and what ever status code you want
     :return:
     """
-    return make_response(jsonify(wrap_data(user_service.get_users())))
+    return make_response(jsonify(wrap_data(user_service.get_users())), 200)
 
 
 @app.route('/api/users/<int:user_id>', methods=['GET'])
@@ -177,7 +177,53 @@ def setup_db():
         'menu_sections' : menu_service.get_menu_sections(),
         'menu_items' : menu_service.get_menu_items(),
     }
+
     return make_response(jsonify(wrap_data(data)))
+
+@app.route('/setup/run_tests', methods=['GET'])
+def run_test():
+
+    """
+    Lets test the crux of our app here
+    :return:
+    """
+    # lets set data in our db
+    setup_db()
+
+    # lets test get lists
+    users = user_service.get_users()
+    menu_sections =  menu_service.get_menu_sections()
+    menu_items = menu_service.get_menu_items()
+
+    assert len(users) == 5
+    assert len(menu_sections) == 6
+    assert len(menu_items) == 16
+
+    # lets test get specific item
+    user = user_service.get_user(1)
+    menu_item = menu_service.get_item(2)
+
+    assert user['id'] == 1
+    assert user['first_name'] == 'Bob'
+    assert user['last_name'] == 'Belcher'
+    assert user['email'] == 'bob@bobsburgers.gmail.com'
+    assert user['deleted'] == 0
+
+    assert menu_item['id'] == 2
+    assert menu_item['name'] == 'Foot Feta-ish Burger'
+    assert menu_item['description'] == 'Comes with feta cheese.'
+    assert menu_item['price'] ==  5.95
+    assert menu_item['section_id'] ==  1
+    assert menu_item['deleted'] ==  0
+
+    # test delete user
+    user_service.delete_user(user)
+    users = user_service.get_users()
+    # users list should now return one less user
+    assert len(users) == 4
+
+
+    return make_response(jsonify({'message':'success, all tests passed'}))
 
 
 def get_connection():

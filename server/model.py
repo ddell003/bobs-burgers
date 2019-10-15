@@ -1,7 +1,17 @@
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+David Dell
+MET CS 521
+09/26/19
+Final Project
+Description: A python API using the flask web framework
+"""
 import sqlite3
 from flask import g
 from flask import abort
 from database_helpers import dict_factory
+
 
 class Model:
     """
@@ -16,8 +26,9 @@ class Model:
 
     def __init__(self):
 
-            for field in self.fields:
-                setattr(self, field, None)
+        # lets set the properties based on the fields in the model
+        for field in self.fields:
+            setattr(self, field, None)
 
     def get(self):
         """
