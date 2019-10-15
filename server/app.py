@@ -39,7 +39,9 @@ This page takes in requests and maps them to my services. This page ideally shou
 requests and responses
 """
 
-
+@app.route('/api/status', methods=['GET'])
+def get_status():
+    return jsonify('success!')
 @app.route('/api/users', methods=['GET'])
 def get_users():
     """
@@ -264,6 +266,16 @@ def not_found(error):
     :return:
     """
     return make_response(jsonify({'error': 'Bad Request'}), 400)
+
+@app.errorhandler(500)
+def not_found(error):
+    """
+    By default, flask will try to return an html error response message, this is an API, we want a json response message
+    Lets return a simple 400 message
+    :param error:
+    :return:
+    """
+    return make_response(jsonify({'error': error.description}), 500)
 
 
 @app.errorhandler(422)

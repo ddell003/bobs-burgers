@@ -62,7 +62,7 @@ class Model:
         conn.row_factory = dict_factory
         cur = conn.cursor()
         # lets get all the item
-        item = cur.execute(query).fetchall()
+        item = cur.execute(query).fetchone()
 
         """
          # alt method if we didnt want to use dict factory

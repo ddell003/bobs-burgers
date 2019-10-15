@@ -94,6 +94,8 @@ class UserService:
         user_model = User()
         request_validator.validate_fields(user_model)
 
+        print(user)
+
         # get the input data from the request
         user_data = request_validator.request.json
         # we only want to update certain fields
