@@ -12,9 +12,13 @@ http://flask.palletsprojects.com/en/1.1.x/
 
 https://vuejs.org/
 
+https://github.com/ddell003/bobs-burgers
+
 ## Set Up:
+There are two parts to setting up this project. First you need to set up the API which is in the server directory.
+Next you need to set up the client which in this APP is a VueJs application.
 ### Server
-to get the python server up and running cd into server and run
+To get the python API up and running cd into server and run
 ```
 source env/bin/activate
 python app.py
