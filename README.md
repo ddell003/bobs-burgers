@@ -14,6 +14,9 @@ https://vuejs.org/
 
 https://github.com/ddell003/bobs-burgers
 
+For more information about this project keep reading the readme and checkout the pdf
+in the base of the directory titled Python Api
+
 ## Set Up:
 There are two parts to setting up this project. First you need to set up the API which is in the server directory.
 Next you need to set up the client which in this APP is a VueJs application.
